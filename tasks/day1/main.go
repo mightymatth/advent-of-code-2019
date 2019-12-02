@@ -10,15 +10,17 @@ import (
 func main() {
 	moduleMasses := readData("tasks/day1/input.txt")
 
-	result := sumCalculation(moduleMasses)
+	result1 := sumCalculation(moduleMasses, roughCalc)
+	result2 := sumCalculation(moduleMasses, preciseCalc)
 
-	fmt.Printf("Result: %#v \n", result)
+	fmt.Printf("Rough result: %#v \n", result1)
+	fmt.Printf("Precise result: %#v \n", result2)
 }
 
-func sumCalculation(moduleMasses []int) int {
+func sumCalculation(moduleMasses []int, calculator func(mass int) int) int {
 	massSum := 0
 	for _, mass := range moduleMasses {
-		massSum += calculateFuel(mass)
+		massSum += calculator(mass)
 	}
 
 	return massSum
@@ -49,6 +51,16 @@ func readData(filePath string) []int {
 	return outputData
 }
 
-func calculateFuel(mass int) int {
+func roughCalc(mass int) int {
 	return mass/3 - 2
+}
+
+func preciseCalc(mass int) int {
+	fuel := mass/3 - 2
+
+	if fuel <= 0 {
+		return 0
+	}
+
+	return fuel + preciseCalc(fuel)
 }
