@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	moduleMasses := readData("day1/input.txt")
+	moduleMasses := readData("tasks/day1/input.txt")
 
 	result := sumCalculation(moduleMasses)
 
@@ -36,7 +36,6 @@ func readData(filePath string) []int {
 
 	scanner := bufio.NewScanner(file)
 
-
 	for scanner.Scan() {
 		value, err := strconv.Atoi(scanner.Text())
 
@@ -50,5 +49,11 @@ func readData(filePath string) []int {
 }
 
 func calculateFuel(mass int) int {
-	return mass/3 - 2
+	fuel := mass/3 - 2
+
+	if fuel <= 0 {
+		return 0
+	}
+
+	return fuel + calculateFuel(fuel)
 }
