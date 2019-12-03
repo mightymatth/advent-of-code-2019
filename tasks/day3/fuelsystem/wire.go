@@ -7,11 +7,11 @@ import (
 )
 
 type Wire struct {
-	Points []Point
+	PathPoints []PathPoint
 }
 
 func NewWire(definition string) Wire {
-	return Wire{Points: Path(Point{X: 0, Y: 0}, definition)}
+	return Wire{PathPoints: Path(Point{X: 0, Y: 0}, definition)}
 }
 
 func FileToWires(filePath string) []Wire {
@@ -47,10 +47,10 @@ func abs(x int) int {
 
 func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 	crossPoints := make([]CrossPoint, 0)
-	for _, point1 := range wire1.Points {
-		for _, point2 := range wire2.Points {
-			if point1 == point2 {
-				crossPoints = append(crossPoints, NewCrossPoint(point1))
+	for _, pathPoint1 := range wire1.PathPoints {
+		for _, pathPoint2 := range wire2.PathPoints {
+			if pathPoint1.Point == pathPoint2.Point {
+				crossPoints = append(crossPoints, NewCrossPoint(pathPoint1, pathPoint2))
 			}
 		}
 	}
@@ -59,13 +59,15 @@ func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 }
 
 type CrossPoint struct {
-	Point Point
+	Point    Point
 	Distance int
+	StepSum  int
 }
 
-func NewCrossPoint(point Point) CrossPoint {
+func NewCrossPoint(pathP1 PathPoint, pathP2 PathPoint) CrossPoint {
 	return CrossPoint{
-		Point:    point,
-		Distance: Distance(Point{X: 0, Y: 0}, point),
+		Point:    pathP1.Point,
+		Distance: Distance(Point{X: 0, Y: 0}, pathP1.Point),
+		StepSum:  pathP1.Step + pathP2.Step,
 	}
 }

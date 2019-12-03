@@ -11,8 +11,14 @@ type Point struct {
 	Y int
 }
 
-func Path(from Point, pathDef string) []Point {
-	path := []Point{from}
+type PathPoint struct {
+	Point Point
+	Step  int
+}
+
+func Path(from Point, pathDef string) []PathPoint {
+	stepCounter := 0
+	path := []PathPoint{{Point: from, Step: stepCounter}}
 
 	moves := strings.Split(pathDef, ",")
 
@@ -23,24 +29,26 @@ func Path(from Point, pathDef string) []Point {
 		dir := match[1]
 		steps, _ := strconv.Atoi(match[2])
 
-		lastPoint := path[len(path)-1]
+		lastPathPoint := path[len(path)-1]
 
-		for step := 0 ; step < steps; step++ {
-			var newPoint Point
+		for step := 0; step < steps; step++ {
+			var newPathPoint PathPoint
+			lastPoint := lastPathPoint.Point
+			stepCounter++
 
 			switch dir {
 			case "L":
-				newPoint = Point{X:lastPoint.X-1, Y:lastPoint.Y}
+				newPathPoint = PathPoint{Point: Point{X: lastPoint.X - 1, Y: lastPoint.Y}, Step: stepCounter}
 			case "U":
-				newPoint = Point{X:lastPoint.X, Y:lastPoint.Y+1}
+				newPathPoint = PathPoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y + 1}, Step: stepCounter}
 			case "R":
-				newPoint = Point{X:lastPoint.X+1, Y:lastPoint.Y}
+				newPathPoint = PathPoint{Point: Point{X: lastPoint.X + 1, Y: lastPoint.Y}, Step: stepCounter}
 			default:
-				newPoint = Point{X:lastPoint.X, Y:lastPoint.Y-1}
+				newPathPoint = PathPoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y - 1}, Step: stepCounter}
 			}
 
-			path = append(path, newPoint)
-			lastPoint = newPoint
+			path = append(path, newPathPoint)
+			lastPathPoint = newPathPoint
 		}
 	}
 
