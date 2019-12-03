@@ -46,4 +46,3 @@ func Path(from Point, pathDef string) []Point {
 
 	return path
 }
-
