@@ -43,7 +43,7 @@ func readData(filePath string) []int {
 		value, err := strconv.Atoi(scanner.Text())
 
 		if err != nil {
-			panic("Cannot read a line.")
+			panic("Cannot convert text to integer.")
 		}
 		outputData = append(outputData, value)
 	}
