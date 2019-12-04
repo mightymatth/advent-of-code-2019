@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 	"strings"
+	"sync"
 )
 
 type Wire struct {
@@ -47,13 +48,21 @@ func abs(x int) int {
 
 func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 	crossPoints := make([]CrossPoint, 0)
+	var wg sync.WaitGroup
 	for _, pathPoint1 := range wire1.PathPoints {
-		for _, pathPoint2 := range wire2.PathPoints {
-			if pathPoint1.Point == pathPoint2.Point {
-				crossPoints = append(crossPoints, NewCrossPoint(pathPoint1, pathPoint2))
+		wg.Add(1)
+
+		go func(currPathPoint1 PathPoint, currPathPoints []PathPoint) {
+			defer wg.Done()
+
+			for _, currPathPoint2 := range currPathPoints {
+				if currPathPoint1.Point == currPathPoint2.Point {
+					crossPoints = append(crossPoints, NewCrossPoint(currPathPoint1, currPathPoint2))
+				}
 			}
-		}
+		}(pathPoint1, wire2.PathPoints)
 	}
+	wg.Wait()
 
 	return crossPoints[1:]
 }
