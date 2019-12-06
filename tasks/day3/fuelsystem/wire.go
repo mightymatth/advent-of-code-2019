@@ -2,9 +2,10 @@ package fuelsystem
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
-	"sync"
+	"time"
 )
 
 type Wire struct {
@@ -47,24 +48,35 @@ func abs(x int) int {
 }
 
 func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
+	defer func(timeStart time.Time) { fmt.Printf("Time in CrossPoints spent: %v\n", time.Since(timeStart)) }(time.Now())
+
 	crossPoints := make([]CrossPoint, 0)
-	var wg sync.WaitGroup
-	for _, pathPoint1 := range wire1.PathPoints {
-		wg.Add(1)
+	crossPointsMap := make(map[string][]PathPoint)
+	wirePoints := append(wire1.PathPoints, wire2.PathPoints...)
 
-		go func(currPathPoint1 PathPoint, currPathPoints []PathPoint) {
-			defer wg.Done()
+	for _, wirePoint := range wirePoints {
+		val, exists := crossPointsMap[wirePoint.Point.StringVal()]
+		if exists {
+			val = append(val, wirePoint)
+			crossPointsMap[wirePoint.Point.StringVal()] = val
+		} else {
+			crossPointsMap[wirePoint.Point.StringVal()] = []PathPoint{wirePoint}
+		}
 
-			for _, currPathPoint2 := range currPathPoints {
-				if currPathPoint1.Point == currPathPoint2.Point {
-					crossPoints = append(crossPoints, NewCrossPoint(currPathPoint1, currPathPoint2))
-				}
-			}
-		}(pathPoint1, wire2.PathPoints)
+		val = crossPointsMap[wirePoint.Point.StringVal()]
 	}
-	wg.Wait()
 
-	return crossPoints[1:]
+	startPoint := Point{X: 0, Y: 0}
+	delete(crossPointsMap, startPoint.StringVal())
+
+	for _, mapCrossPoints := range crossPointsMap {
+		if len(mapCrossPoints) == 2 {
+			a := NewCrossPoint(mapCrossPoints[0], mapCrossPoints[1])
+			crossPoints = append(crossPoints, a)
+		}
+	}
+
+	return crossPoints
 }
 
 type CrossPoint struct {

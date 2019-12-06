@@ -11,6 +11,10 @@ type Point struct {
 	Y int
 }
 
+func (p *Point) StringVal() string {
+	return strconv.Itoa(p.X) + "," + strconv.Itoa(p.Y)
+}
+
 type PathPoint struct {
 	Point Point
 	Step  int
