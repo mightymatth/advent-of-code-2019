@@ -34,27 +34,25 @@ func (in *Instruction) Execute() (offset int, halt bool) {
 }
 
 func (in *Instruction) add() (offset int) {
-	val1 := in.valueForParameter(First)
-	val2 := in.valueForParameter(Second)
-	val3 := in.memory[in.index + 3]
+	val1 := in.memory[in.valueForParameter(First)]
+	val2 := in.memory[in.valueForParameter(Second)]
 
-	in.memory[val3] = val1 + val2
+	in.memory[in.valueForParameter(Third)] = val1 + val2
 
 	return 4
 }
 
 func (in *Instruction) multiply() (offset int) {
-	val1 := in.valueForParameter(First)
-	val2 := in.valueForParameter(Second)
-	val3 := in.memory[in.index + 3]
+	val1 := in.memory[in.valueForParameter(First)]
+	val2 := in.memory[in.valueForParameter(Second)]
 
-	in.memory[val3] = val1 * val2
+	in.memory[in.valueForParameter(Third)] = val1 * val2
 
 	return 4
 }
 
 func (in *Instruction) storeInput() int {
-	val1 := in.memory[in.index + 1]
+	val1 := in.valueForParameter(First)
 
 	in.memory[val1] = 1 // user input
 
@@ -62,7 +60,7 @@ func (in *Instruction) storeInput() int {
 }
 
 func (in *Instruction) printInput() int {
-	val1 := in.memory[in.memory[in.index + 1]]
+	val1 := in.memory[in.valueForParameter(First)]
 
 	fmt.Println(val1)
 
@@ -85,9 +83,9 @@ func (in *Instruction) valueForParameter(position ParamPosition) int {
 func (in *Instruction) valueForMode(offset int, mode OpCodeMode) int {
 	switch mode {
 	case ImmediateMode:
-		return in.memory[in.index + offset]
+		return in.index + offset
 	case PositionMode:
-		return in.memory[in.memory[in.index + offset]]
+		return in.memory[in.index + offset]
 	default:
 		panic("Unknown operation code mode.")
 	}
