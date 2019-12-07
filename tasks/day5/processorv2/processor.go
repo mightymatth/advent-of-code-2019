@@ -16,7 +16,7 @@ func (p *Processor) Start() {
 	i := 0
 	for ; i < len(p.memory); {
 		instruction := NewInstruction(i, p.memory)
- 		offset, end := instruction.Execute()
+		offset, end := instruction.Execute()
 
 		if end {
 			fmt.Println("Program halts!")

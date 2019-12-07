@@ -6,7 +6,7 @@ import (
 )
 
 type Instruction struct {
-	index int
+	index  int
 	opCode OpCode
 	memory []int
 }
@@ -143,7 +143,7 @@ func (in *Instruction) valueForMode(offset int, mode OpCodeMode) int {
 	case ImmediateMode:
 		return in.index + offset
 	case PositionMode:
-		return in.memory[in.index + offset]
+		return in.memory[in.index+offset]
 	default:
 		panic("Unknown operation code mode.")
 	}
@@ -154,6 +154,7 @@ func (in *Instruction) jumpOffset(jumpIndex int) int {
 }
 
 type ParamPosition int
+
 const (
 	First ParamPosition = iota
 	Second
