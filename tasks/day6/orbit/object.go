@@ -1,11 +1,5 @@
 package orbit
 
-import (
-	"bufio"
-	"os"
-	"strings"
-)
-
 type Object struct {
 	Name     string
 	OrbitsIn *Object
@@ -17,33 +11,7 @@ func (o *Object) orbits(object *Object) {
 	o.OrbitsIn = object
 }
 
-func NewMap(filePath string) Object {
-	file, err := os.Open(filePath)
-
-	if err != nil {
-		panic("Cannot read the file!")
-	}
-	defer file.Close()
-
-	objectMap := make(map[string]*Object)
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		objectNames := strings.Split(strings.TrimSpace(scanner.Text()), ")")
-
-		objectP := getObject(objectMap, objectNames[0])
-		objectInOrbitP := getObject(objectMap, objectNames[1])
-
-		objectInOrbitP.orbits(objectP)
-	}
-
-	comObjectP := getObject(objectMap, "COM")
-
-	return *comObjectP
-}
-
-func getObject(objectMap map[string]*Object, objectName string) *Object {
+func getOrCreateObject(objectMap map[string]*Object, objectName string) *Object {
 	objectP, exists := objectMap[objectName]
 
 	if exists {

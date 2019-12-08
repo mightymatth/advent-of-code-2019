@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
-	comObject := orbit.NewMap("tasks/day6/input.txt")
-	fmt.Printf("Checksum: %v\n", comObject.CountOrbitSum())
+	space := orbit.NewSpace("tasks/day6/input.txt")
+	fmt.Printf("Checksum: %v\n", space.CountOrbitSum())
+	fmt.Printf("Diff orbital changes: %v\n", space.CalculateOrbitalChanges("YOU", "SAN"))
 }
