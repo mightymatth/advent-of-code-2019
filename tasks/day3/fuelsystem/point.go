@@ -1,6 +1,7 @@
 package fuelsystem
 
 import (
+	"math/rand"
 	"regexp"
 	"strconv"
 	"strings"
@@ -15,14 +16,16 @@ func (p *Point) StringVal() string {
 	return strconv.Itoa(p.X) + "," + strconv.Itoa(p.Y)
 }
 
-type PathPoint struct {
-	Point Point
-	Step  int
+type WirePoint struct {
+	Point     Point
+	SerialNum int
+	Step      int
 }
 
-func Path(from Point, pathDef string) []PathPoint {
+func Path(from Point, pathDef string) []WirePoint {
+	wireSerialNum := rand.Int()
 	stepCounter := 0
-	path := []PathPoint{{Point: from, Step: stepCounter}}
+	path := []WirePoint{{Point: from, SerialNum: wireSerialNum, Step: stepCounter}}
 
 	moves := strings.Split(pathDef, ",")
 
@@ -36,23 +39,27 @@ func Path(from Point, pathDef string) []PathPoint {
 		lastPathPoint := path[len(path)-1]
 
 		for step := 0; step < steps; step++ {
-			var newPathPoint PathPoint
+			var newWirePoint WirePoint
 			lastPoint := lastPathPoint.Point
 			stepCounter++
 
 			switch dir {
 			case "L":
-				newPathPoint = PathPoint{Point: Point{X: lastPoint.X - 1, Y: lastPoint.Y}, Step: stepCounter}
+				newWirePoint = WirePoint{Point: Point{X: lastPoint.X - 1, Y: lastPoint.Y},
+					SerialNum: wireSerialNum, Step: stepCounter}
 			case "U":
-				newPathPoint = PathPoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y + 1}, Step: stepCounter}
+				newWirePoint = WirePoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y + 1},
+					SerialNum: wireSerialNum, Step: stepCounter}
 			case "R":
-				newPathPoint = PathPoint{Point: Point{X: lastPoint.X + 1, Y: lastPoint.Y}, Step: stepCounter}
+				newWirePoint = WirePoint{Point: Point{X: lastPoint.X + 1, Y: lastPoint.Y},
+					SerialNum: wireSerialNum, Step: stepCounter}
 			default:
-				newPathPoint = PathPoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y - 1}, Step: stepCounter}
+				newWirePoint = WirePoint{Point: Point{X: lastPoint.X, Y: lastPoint.Y - 1},
+					SerialNum: wireSerialNum, Step: stepCounter}
 			}
 
-			path = append(path, newPathPoint)
-			lastPathPoint = newPathPoint
+			path = append(path, newWirePoint)
+			lastPathPoint = newWirePoint
 		}
 	}
 

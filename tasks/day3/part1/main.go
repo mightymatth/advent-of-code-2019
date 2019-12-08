@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/mightymatth/advent-of-code-2019/tasks/day3/fuelsystem"
-	"math"
 )
 
 func main() {
@@ -13,15 +12,8 @@ func main() {
 	wire2 := wires[1]
 
 	crossPoints := fuelsystem.CrossPoints(wire1, wire2)
-
-	var shortestCross fuelsystem.CrossPoint
-	shortestCrossDistance := math.MaxInt32
-	for _, crossPoint := range crossPoints {
-		if crossPoint.Distance < shortestCrossDistance {
-			shortestCross = crossPoint
-			shortestCrossDistance = crossPoint.Distance
-		}
-	}
+	shortestCross := fuelsystem.ShortestCrossPointForDistance(crossPoints)
 
 	fmt.Printf("Shortest cross: %v\n", shortestCross)
+	fmt.Printf("Shortest cross distance: %v\n", shortestCross.Distance)
 }

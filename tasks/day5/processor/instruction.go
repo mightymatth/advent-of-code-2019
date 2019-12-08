@@ -3,6 +3,7 @@ package processor
 import (
 	"fmt"
 	"log"
+	"strconv"
 )
 
 type Instruction struct {
@@ -54,7 +55,8 @@ func (in *Instruction) multiply() (offset int) {
 func (in *Instruction) storeInput() int {
 	val1 := in.valueForParameter(First)
 
-	in.memory[val1] = 1 // user input
+
+	in.memory[val1] = in.getUserInput() // user input
 
 	return 2
 }
@@ -89,6 +91,23 @@ func (in *Instruction) valueForMode(offset int, mode OpCodeMode) int {
 	default:
 		panic("Unknown operation code mode.")
 	}
+}
+
+func (in Instruction) getUserInput() int {
+	fmt.Print("Enter input: ")
+	var input string
+	_, err := fmt.Scanln(&input)
+
+	if err != nil {
+		panic("Error happened when taking user input")
+	}
+
+	inputNumber, err := strconv.Atoi(input)
+	if err != nil {
+		panic("Cannot convert user input to integer value")
+	}
+
+	return inputNumber
 }
 
 type ParamPosition int

@@ -9,11 +9,11 @@ import (
 )
 
 type Wire struct {
-	PathPoints []PathPoint
+	WirePoints []WirePoint
 }
 
 func NewWire(definition string) Wire {
-	return Wire{PathPoints: Path(Point{X: 0, Y: 0}, definition)}
+	return Wire{WirePoints: Path(Point{X: 0, Y: 0}, definition)}
 }
 
 func FileToWires(filePath string) []Wire {
@@ -36,23 +36,12 @@ func FileToWires(filePath string) []Wire {
 	return wires
 }
 
-func Distance(p1 Point, p2 Point) int {
-	return abs(p1.X-p2.X) + abs(p1.Y-p2.Y)
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
 func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 	defer func(timeStart time.Time) { fmt.Printf("Time in CrossPoints spent: %v\n", time.Since(timeStart)) }(time.Now())
 
 	crossPoints := make([]CrossPoint, 0)
-	crossPointsMap := make(map[string][]PathPoint)
-	wirePoints := append(wire1.PathPoints, wire2.PathPoints...)
+	crossPointsMap := make(map[string][]WirePoint)
+	wirePoints := append(wire1.WirePoints, wire2.WirePoints...)
 
 	for _, wirePoint := range wirePoints {
 		val, exists := crossPointsMap[wirePoint.Point.StringVal()]
@@ -60,7 +49,7 @@ func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 			val = append(val, wirePoint)
 			crossPointsMap[wirePoint.Point.StringVal()] = val
 		} else {
-			crossPointsMap[wirePoint.Point.StringVal()] = []PathPoint{wirePoint}
+			crossPointsMap[wirePoint.Point.StringVal()] = []WirePoint{wirePoint}
 		}
 
 		val = crossPointsMap[wirePoint.Point.StringVal()]
@@ -70,25 +59,20 @@ func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 	delete(crossPointsMap, startPoint.StringVal())
 
 	for _, mapCrossPoints := range crossPointsMap {
-		if len(mapCrossPoints) == 2 {
-			a := NewCrossPoint(mapCrossPoints[0], mapCrossPoints[1])
-			crossPoints = append(crossPoints, a)
+		if len(mapCrossPoints) < 2 {
+			continue
+		}
+
+		for i, mapCrossPoint1 := range mapCrossPoints {
+			for j, mapCrossPoint2 := range mapCrossPoints {
+				if i == j {
+					continue
+				}
+
+				crossPoints = append(crossPoints, NewCrossPoint(mapCrossPoint1, mapCrossPoint2))
+			}
 		}
 	}
 
 	return crossPoints
-}
-
-type CrossPoint struct {
-	Point    Point
-	Distance int
-	StepSum  int
-}
-
-func NewCrossPoint(pathP1 PathPoint, pathP2 PathPoint) CrossPoint {
-	return CrossPoint{
-		Point:    pathP1.Point,
-		Distance: Distance(Point{X: 0, Y: 0}, pathP1.Point),
-		StepSum:  pathP1.Step + pathP2.Step,
-	}
 }
