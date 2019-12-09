@@ -1,10 +1,11 @@
-package processor
+package processorv2
 
 import (
 	"bufio"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Processor struct {
@@ -13,13 +14,14 @@ type Processor struct {
 	Output chan int
 }
 
-func (p *Processor) Start() {
+func (p *Processor) Start(wg *sync.WaitGroup) {
 	i := 0
 	for ; i < len(p.Memory); {
 		instruction := NewInstruction(i, *p)
 		offset, end := instruction.Execute()
 
 		if end {
+			wg.Done()
 			break
 		}
 
