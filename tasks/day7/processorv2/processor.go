@@ -14,6 +14,14 @@ type Processor struct {
 	Output chan int
 }
 
+func NewProcessor() Processor {
+	return Processor{
+		Memory: nil,
+		Input:  make(chan int, 2),
+		Output: make(chan int, 2),
+	}
+}
+
 func (p *Processor) Start(wg *sync.WaitGroup) {
 	i := 0
 	for ; i < len(p.Memory); {
@@ -29,7 +37,7 @@ func (p *Processor) Start(wg *sync.WaitGroup) {
 	}
 }
 
-func (p Processor) FileToMemoryData(filePath string) []int {
+func ParseToMemory(filePath string) []int {
 	file, err := os.Open(filePath)
 
 	if err != nil {
@@ -63,7 +71,7 @@ func (p *Processor) GetMemory() []int {
 }
 
 func (p *Processor) LoadMemory(filePath string) {
-	data := p.FileToMemoryData(filePath)
+	data := ParseToMemory(filePath)
 
 	p.Memory = data
 }

@@ -6,9 +6,7 @@ import (
 )
 
 func Amplifier() int {
-	p := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
-	pMemory := p.FileToMemoryData("tasks/day7/input.txt")
-
+	pMemory := processorv2.ParseToMemory("tasks/day7/input.txt")
 	inputsPerms := permutations([]int{5, 6, 7, 8, 9})
 
 	maxSourceSignal := 0
@@ -16,32 +14,32 @@ func Amplifier() int {
 		sourceSignal := 0
 
 		var wg sync.WaitGroup
-		ampA := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
+		ampA := processorv2.NewProcessor()
 		ampA.LoadMemoryWithData(pMemory)
 		ampA.Input <- phaseInputs[0]
 		ampA.Input <- sourceSignal
 		wg.Add(1)
 		go ampA.Start(&wg)
 
-		ampB := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
+		ampB := processorv2.NewProcessor()
 		ampB.LoadMemoryWithData(pMemory)
 		ampB.Input <- phaseInputs[1]
 		wg.Add(1)
 		go ampB.Start(&wg)
 
-		ampC := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
+		ampC := processorv2.NewProcessor()
 		ampC.LoadMemoryWithData(pMemory)
 		ampC.Input <- phaseInputs[2]
 		wg.Add(1)
 		go ampC.Start(&wg)
 
-		ampD := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
+		ampD := processorv2.NewProcessor()
 		ampD.LoadMemoryWithData(pMemory)
 		ampD.Input <- phaseInputs[3]
 		wg.Add(1)
 		go ampD.Start(&wg)
 
-		ampE := processorv2.Processor{Input: make(chan int, 50), Output: make(chan int, 50)}
+		ampE := processorv2.NewProcessor()
 		ampE.LoadMemoryWithData(pMemory)
 		ampE.Input <- phaseInputs[4]
 		wg.Add(1)
