@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	p := picture.LoadPicture("tasks/day8/inputDummy.txt", 3, 2)
-
-	fmt.Println(p.Layers)
+	p := picture.LoadPicture("tasks/day8/input.txt", 25, 6)
+	fmt.Println("Part 2:")
+	p.Draw()
 }

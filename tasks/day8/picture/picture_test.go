@@ -24,3 +24,9 @@ func TestPicture_IntegrityCheck(t *testing.T) {
 	p2 := LoadPicture("../input.txt", 25, 6)
 	assert.Equal(t, 2193, p2.IntegrityCheck())
 }
+
+func TestPicture_Draw(t *testing.T) {
+	p := LoadPicture("../input.txt", 25, 6)
+
+	p.Draw()
+}

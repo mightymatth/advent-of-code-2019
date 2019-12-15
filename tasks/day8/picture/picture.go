@@ -2,6 +2,7 @@ package picture
 
 import (
 	"bufio"
+	"fmt"
 	"math"
 	"os"
 	"strconv"
@@ -97,3 +98,36 @@ func (p Picture) minZeroDigitsLayer() Layer {
 
 	return minZeroDigitsLayer
 }
+
+func (p Picture) Draw() {
+	for i := 0; i < p.Height; i++ {
+		for j := 0; j < p.Width; j++ {
+			var pixelColor PixelColor
+			for _, layer := range p.Layers {
+				pixelColor = PixelColor(layer.pixels[i][j])
+
+				if pixelColor == Black || pixelColor == White {
+					break
+				}
+			}
+
+			switch pixelColor {
+			case Black:
+				fmt.Print(" ")
+			case White:
+				fmt.Print("▋")
+			case Transparent:
+				fmt.Print("▒")
+			}
+		}
+		fmt.Println("")
+	}
+}
+
+type PixelColor int
+
+const (
+	Black       PixelColor = 0
+	White                  = 1
+	Transparent            = 2
+)
