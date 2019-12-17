@@ -17,16 +17,16 @@ type Processor struct {
 
 func NewProcessor() Processor {
 	return Processor{
-		Memory: nil,
+		Memory:       nil,
 		RelativeBase: 0,
-		Input:  make(chan int, 300),
-		Output: make(chan int, 300),
+		Input:        make(chan int, 300),
+		Output:       make(chan int, 300),
 	}
 }
 
 func (p *Processor) Start(wg *sync.WaitGroup) {
 	i := 0
-	for ; i < len(p.Memory); {
+	for i < len(p.Memory) {
 		instruction := NewInstruction(i, p)
 		offset, end := instruction.Execute()
 

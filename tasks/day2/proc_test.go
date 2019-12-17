@@ -10,7 +10,7 @@ func TestProcessor_Start(t *testing.T) {
 	p.SetNounVerb(12, 2)
 
 	res := p.Start()
-	
+
 	expectedRes := ProcessorOutput{
 		Result: 4690667,
 		Noun:   12,

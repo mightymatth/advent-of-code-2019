@@ -46,7 +46,7 @@ func Amplifier() int {
 		go ampE.Start(&wg)
 
 		go func() {
-			for ; ; {
+			for {
 				select {
 				case outputAmpA := <-ampA.Output:
 					ampB.Input <- outputAmpA

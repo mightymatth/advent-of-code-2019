@@ -24,7 +24,7 @@ func NewProcessor() Processor {
 
 func (p *Processor) Start(wg *sync.WaitGroup) {
 	i := 0
-	for ; i < len(p.Memory); {
+	for i < len(p.Memory) {
 		instruction := NewInstruction(i, *p)
 		offset, end := instruction.Execute()
 

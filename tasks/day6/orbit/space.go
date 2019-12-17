@@ -8,7 +8,7 @@ import (
 )
 
 type Space struct {
-	com *Object
+	com       *Object
 	objectMap map[string]*Object
 }
 
@@ -54,19 +54,19 @@ func (s Space) CalculateOrbitalChanges(fromObjectName string, toObjectName strin
 	toDepth := s.getDepth(to)
 
 	if fromDepth < toDepth {
-		for i := 0; i < toDepth - fromDepth; i++ {
+		for i := 0; i < toDepth-fromDepth; i++ {
 			to = *to.OrbitsIn
 			changeCount++
 		}
 	} else {
-		for i := 0; i < fromDepth - toDepth; i++ {
+		for i := 0; i < fromDepth-toDepth; i++ {
 			from = *from.OrbitsIn
 			changeCount++
 		}
 	}
 
-	for ; ; {
-		if from.Name == to.Name || from.OrbitsIn == nil || to.OrbitsIn == nil{
+	for {
+		if from.Name == to.Name || from.OrbitsIn == nil || to.OrbitsIn == nil {
 			break
 		}
 		to = *to.OrbitsIn
@@ -90,7 +90,7 @@ func (s Space) findObjectByName(name string) Object {
 func (s Space) getDepth(object Object) int {
 	depth := 0
 
-	for ; ; {
+	for {
 		if object.Name == "COM" {
 			break
 		}

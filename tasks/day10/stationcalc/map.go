@@ -59,7 +59,7 @@ func NewMap(filePath string) Map {
 	}
 }
 
-func (m Map) Calc()  {
+func (m Map) Calc() {
 
 }
 

@@ -15,7 +15,7 @@ type Processor struct {
 
 func (p *Processor) Start() {
 	i := 0
-	for ; i < len(p.Memory); {
+	for i < len(p.Memory) {
 		instruction := NewInstruction(i, *p)
 		offset, end := instruction.Execute()
 

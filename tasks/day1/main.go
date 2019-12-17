@@ -38,7 +38,6 @@ func readData(filePath string) []int {
 
 	scanner := bufio.NewScanner(file)
 
-
 	for scanner.Scan() {
 		value, err := strconv.Atoi(scanner.Text())
 

@@ -9,10 +9,10 @@ type OpCode struct {
 	ModeParam1 OpCodeMode
 	ModeParam2 OpCodeMode
 	ModeParam3 OpCodeMode
-	Operation OpCodeOperation
+	Operation  OpCodeOperation
 }
 
-func NewOpCode(opCode int) OpCode  {
+func NewOpCode(opCode int) OpCode {
 	opCodeStr := strconv.Itoa(opCode)
 	opCodeStr = fmt.Sprintf("%05s", opCodeStr)
 
@@ -25,12 +25,14 @@ func NewOpCode(opCode int) OpCode  {
 }
 
 type OpCodeMode int
+
 const (
 	ImmediateMode OpCodeMode = iota
 	PositionMode
 )
 
 type OpCodeOperation int
+
 const (
 	AddOperation OpCodeOperation = iota
 	MultiplyOperation

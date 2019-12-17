@@ -7,7 +7,7 @@ import (
 )
 
 type Instruction struct {
-	index int
+	index  int
 	opCode OpCode
 	memory []int
 }
@@ -55,7 +55,6 @@ func (in *Instruction) multiply() (offset int) {
 func (in *Instruction) storeInput() int {
 	val1 := in.valueForParameter(First)
 
-
 	in.memory[val1] = in.getUserInput() // user input
 
 	return 2
@@ -87,7 +86,7 @@ func (in *Instruction) valueForMode(offset int, mode OpCodeMode) int {
 	case ImmediateMode:
 		return in.index + offset
 	case PositionMode:
-		return in.memory[in.index + offset]
+		return in.memory[in.index+offset]
 	default:
 		panic("Unknown operation code mode.")
 	}
@@ -111,6 +110,7 @@ func (in Instruction) getUserInput() int {
 }
 
 type ParamPosition int
+
 const (
 	First ParamPosition = iota
 	Second
