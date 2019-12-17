@@ -59,6 +59,10 @@ func NewMap(filePath string) Map {
 	}
 }
 
+func (m Map) Calc()  {
+
+}
+
 func (m *Map) CalcOptimalPosition() Asteroid {
 	var optimalAsteroid Asteroid
 	maxLOS := 0
@@ -105,15 +109,6 @@ func (m Map) CalcShadeSpace(ref Asteroid) ShadeSpace {
 	}
 
 	return shadeSpace
-}
-
-type Position struct {
-	X int
-	Y int
-}
-
-func (p Position) toString() string {
-	return fmt.Sprintf("%v,%v", p.X, p.Y)
 }
 
 type ShadeSpace map[string]bool

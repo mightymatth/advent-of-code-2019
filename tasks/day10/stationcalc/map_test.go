@@ -65,3 +65,23 @@ func TestMap_CalcOptimalPosition(t *testing.T) {
 	bestAsteroid := spaceMap.CalcOptimalPosition()
 	assert.Equal(t, 260, bestAsteroid.LOS)
 }
+
+// Look at the picture: assets/measureAngleTest.jpg
+func TestMeasureAngle(t *testing.T) {
+	angle1 := measureAngle(Position{X: 7, Y: 9}, Position{X: 7, Y: 6})
+	angle2 := measureAngle(Position{X: 7, Y: 9}, Position{X: 8, Y: 6})
+	angle3 := measureAngle(Position{X: 7, Y: 9}, Position{X: 8, Y: 7})
+	angle4 := measureAngle(Position{X: 7, Y: 9}, Position{X: 10, Y: 9})
+	angle5 := measureAngle(Position{X: 7, Y: 9}, Position{X: 8, Y: 11})
+	angle6 := measureAngle(Position{X: 7, Y: 9}, Position{X: 7, Y: 12})
+	angle7 := measureAngle(Position{X: 7, Y: 9}, Position{X: 5, Y: 11})
+	angle8 := measureAngle(Position{X: 7, Y: 9}, Position{X: 5, Y: 9})
+
+	assert.True(t, angle2 > angle1)
+	assert.True(t, angle3 > angle2)
+	assert.True(t, angle4 > angle3)
+	assert.True(t, angle5 > angle4)
+	assert.True(t, angle6 > angle5)
+	assert.True(t, angle7 > angle6)
+	assert.True(t, angle8 > angle7)
+}
