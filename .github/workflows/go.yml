@@ -13,12 +13,12 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Check out code the Go-Way
-          run: go get github.com/${GITHUB_REPOSITORY}
+          run: go get github.com/$GITHUB_REPOSITORY
       - name: Build
           run: |
-            cd ~/go/src/github.com/${GITHUB_REPOSITORY}
+            cd ~/go/src/github.com/$GITHUB_REPOSITORY
             go build -v ./...
       - name: Test
           run: |
-            cd ~/go/src/github.com/${GITHUB_REPOSITORY}
+            cd ~/go/src/github.com/$GITHUB_REPOSITORY
             go test -v ./...
