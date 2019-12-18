@@ -12,8 +12,12 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Check out code the Go-Way
+      - name: Checkout repository
         run: go get github.com/$GITHUB_REPOSITORY/...
+      - name: Get dependencies
+        run: |
+          cd ~/go/src/github.com/$GITHUB_REPOSITORY
+          go get -v -t -d ./...
       - name: Build
         run: |
           cd ~/go/src/github.com/$GITHUB_REPOSITORY
