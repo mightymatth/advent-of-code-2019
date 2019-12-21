@@ -36,7 +36,7 @@ func NewMap(filePath string) Map {
 		for mapWidthIndex, symbol := range mapSymbols {
 			switch MapSymbol(symbol) {
 			case AsteroidSymbol:
-				asteroids = append(asteroids, NewAsteroid( mapWidthIndex, mapHeight))
+				asteroids = append(asteroids, NewAsteroid(mapWidthIndex, mapHeight))
 			case SpaceSymbol:
 			default:
 				panic(fmt.Sprintf("Unknown map symbol: %v\n", symbol))
@@ -63,7 +63,7 @@ func NewMap(filePath string) Map {
 func (m Map) LaserTargets(from Asteroid) (destroyed []Asteroid) {
 	destroyed = make([]Asteroid, 0)
 
-	for ;len(m.Asteroids) != 1; {
+	for len(m.Asteroids) != 1 {
 		_, toDestroy := m.CalcLOS(from)
 		laserTargets := LaserTargets{Laser: &from, Targets: toDestroy}
 		sort.Sort(&laserTargets)
@@ -90,7 +90,7 @@ func (m *Map) CalcOptimalPosition() Asteroid {
 	return optimalAsteroid
 }
 
-func (m *Map) destroyAsteroids(toDestroy []Asteroid)  {
+func (m *Map) destroyAsteroids(toDestroy []Asteroid) {
 	for i := 0; i < len(m.Asteroids); i++ {
 		target := m.Asteroids[i]
 		for _, rem := range toDestroy {
@@ -102,7 +102,6 @@ func (m *Map) destroyAsteroids(toDestroy []Asteroid)  {
 		}
 	}
 }
-
 
 func (m Map) CalcLOS(ref Asteroid) (losCounter int, losAsteroids []Asteroid) {
 	shadeSpace := m.CalcShadeSpace(ref)

@@ -2,7 +2,7 @@ package stationcalc
 
 type Asteroid struct {
 	Position Position
-	LOS int
+	LOS      int
 }
 
 func NewAsteroid(x, y int) Asteroid {
