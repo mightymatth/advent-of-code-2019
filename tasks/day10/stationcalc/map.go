@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -35,7 +36,7 @@ func NewMap(filePath string) Map {
 		for mapWidthIndex, symbol := range mapSymbols {
 			switch MapSymbol(symbol) {
 			case AsteroidSymbol:
-				asteroids = append(asteroids, Asteroid{X: mapWidthIndex, Y: mapHeight})
+				asteroids = append(asteroids, NewAsteroid( mapWidthIndex, mapHeight))
 			case SpaceSymbol:
 			default:
 				panic(fmt.Sprintf("Unknown map symbol: %v\n", symbol))
@@ -59,8 +60,18 @@ func NewMap(filePath string) Map {
 	}
 }
 
-func (m Map) Calc() {
+func (m Map) LaserTargets(from Asteroid) (destroyed []Asteroid) {
+	destroyed = make([]Asteroid, 0)
 
+	for ;len(m.Asteroids) != 1; {
+		_, toDestroy := m.CalcLOS(from)
+		laserTargets := LaserTargets{Laser: &from, Targets: toDestroy}
+		sort.Sort(&laserTargets)
+		m.destroyAsteroids(laserTargets.Targets)
+		destroyed = append(destroyed, laserTargets.Targets...)
+	}
+
+	return
 }
 
 func (m *Map) CalcOptimalPosition() Asteroid {
@@ -68,7 +79,7 @@ func (m *Map) CalcOptimalPosition() Asteroid {
 	maxLOS := 0
 
 	for i, asteroid := range m.Asteroids {
-		m.Asteroids[i].LOS = m.CalcLOS(asteroid)
+		m.Asteroids[i].LOS, _ = m.CalcLOS(asteroid)
 
 		if m.Asteroids[i].LOS > maxLOS {
 			maxLOS = m.Asteroids[i].LOS
@@ -79,23 +90,39 @@ func (m *Map) CalcOptimalPosition() Asteroid {
 	return optimalAsteroid
 }
 
-func (m Map) CalcLOS(ref Asteroid) int {
+func (m *Map) destroyAsteroids(toDestroy []Asteroid)  {
+	for i := 0; i < len(m.Asteroids); i++ {
+		target := m.Asteroids[i]
+		for _, rem := range toDestroy {
+			if target.Position.toString() == rem.Position.toString() {
+				m.Asteroids = append(m.Asteroids[:i], m.Asteroids[i+1:]...)
+				i--
+				break
+			}
+		}
+	}
+}
+
+
+func (m Map) CalcLOS(ref Asteroid) (losCounter int, losAsteroids []Asteroid) {
 	shadeSpace := m.CalcShadeSpace(ref)
-	los := 0
+	losCounter = 0
+	losAsteroids = make([]Asteroid, 0)
 
 	for _, target := range m.Asteroids {
 		if ref == target {
 			continue
 		}
 
-		_, hit := shadeSpace[Position{X: target.X, Y: target.Y}.toString()]
+		_, hit := shadeSpace[target.Position.toString()]
 
 		if !hit {
-			los++
+			losCounter++
+			losAsteroids = append(losAsteroids, target)
 		}
 	}
 
-	return los
+	return
 }
 
 func (m Map) CalcShadeSpace(ref Asteroid) ShadeSpace {
@@ -118,8 +145,8 @@ func (m Map) fillShadeSpace(ref Asteroid, target Asteroid, shadeSpace ShadeSpace
 
 	for i := 1; ; i++ {
 		nextPosition := Position{
-			X: target.X + i*stepX,
-			Y: target.Y + i*stepY,
+			X: target.Position.X + i*stepX,
+			Y: target.Position.Y + i*stepY,
 		}
 
 		if m.isOut(nextPosition) {
@@ -131,10 +158,10 @@ func (m Map) fillShadeSpace(ref Asteroid, target Asteroid, shadeSpace ShadeSpace
 }
 
 func findStep(ref Asteroid, target Asteroid) (stepX, stepY int) {
-	x1 := ref.X
-	y1 := ref.Y
-	x2 := target.X
-	y2 := target.Y
+	x1 := ref.Position.X
+	y1 := ref.Position.Y
+	x2 := target.Position.X
+	y2 := target.Position.Y
 
 	stepX = (x2 - x1) / gcd(abs(x2-x1), abs(y2-y1))
 	stepY = (y2 - y1) / gcd(abs(x2-x1), abs(y2-y1))

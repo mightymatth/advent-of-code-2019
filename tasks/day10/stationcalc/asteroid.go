@@ -1,7 +1,13 @@
 package stationcalc
 
 type Asteroid struct {
-	X   int
-	Y   int
+	Position Position
 	LOS int
+}
+
+func NewAsteroid(x, y int) Asteroid {
+	return Asteroid{
+		Position: Position{X: x, Y: y},
+		LOS:      0,
+	}
 }
