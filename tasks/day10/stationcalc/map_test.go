@@ -103,18 +103,17 @@ func TestMap_LaserTargets(t *testing.T) {
 	assert.Equal(t, Position{X: 1, Y: 0}, targetsDummy1[8].Position)
 }
 
-func TestBetDummy(t *testing.T) {
-	spaceMap := NewMap("../inputDummy3.txt")
-	laser := spaceMap.CalcOptimalPosition()
-	targets := spaceMap.LaserTargets(laser)
-	aimedPosition := targets[199].Position
-	assert.Equal(t, 802, aimedPosition.X*100+aimedPosition.Y)
+func TestBet(t *testing.T) {
+	assert.Equal(t, 802, calculateBet("../inputDummy3.txt"))
+	assert.Equal(t, 608, calculateBet("../input.txt"))
 }
 
-func TestBetReal(t *testing.T) {
-	spaceMap := NewMap("../input.txt")
+func calculateBet(inputFilePath string) int {
+	spaceMap := NewMap(inputFilePath)
 	laser := spaceMap.CalcOptimalPosition()
 	targets := spaceMap.LaserTargets(laser)
 	aimedPosition := targets[199].Position
-	assert.Equal(t, 608, aimedPosition.X*100+aimedPosition.Y)
+	result := aimedPosition.X*100 + aimedPosition.Y
+
+	return result
 }
