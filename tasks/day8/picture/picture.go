@@ -128,6 +128,6 @@ type PixelColor int
 
 const (
 	Black       PixelColor = 0
-	White                  = 1
-	Transparent            = 2
+	White       PixelColor = 1
+	Transparent PixelColor = 2
 )

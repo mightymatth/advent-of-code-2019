@@ -51,8 +51,6 @@ func CrossPoints(wire1 Wire, wire2 Wire) []CrossPoint {
 		} else {
 			crossPointsMap[wirePoint.Point.StringVal()] = []WirePoint{wirePoint}
 		}
-
-		val = crossPointsMap[wirePoint.Point.StringVal()]
 	}
 
 	startPoint := Point{X: 0, Y: 0}

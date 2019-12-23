@@ -193,5 +193,5 @@ type MapSymbol string
 
 const (
 	AsteroidSymbol MapSymbol = "#"
-	SpaceSymbol              = "."
+	SpaceSymbol    MapSymbol = "."
 )

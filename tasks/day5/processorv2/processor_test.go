@@ -8,8 +8,6 @@ func TestInstruction_Execute(t *testing.T) {
 	in := NewInstruction(0, memory)
 	in.Execute()
 
-	t.Logf("%v", memory)
-
 	if memory[9] != 1 {
 		t.Fail()
 	}
