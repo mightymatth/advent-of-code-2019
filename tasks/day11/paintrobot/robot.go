@@ -1,6 +1,9 @@
 package paintrobot
 
 import (
+	"fmt"
+	"sync"
+
 	"github.com/mightymatth/advent-of-code-2019/tasks/day9/processor"
 )
 
@@ -25,13 +28,17 @@ func NewRobot(filePath string) Robot {
 	return Robot{
 		Proc:           proc,
 		PaintingBlocks: make(PaintingBlocks),
-		PaintHistory:   make(chan PositionState),
+		PaintHistory:   make(chan PositionState, 10000),
 	}
 }
 
-func (r *Robot) StartPainting() {
+func (r *Robot) Paint() {
 	go r.Proc.Start(nil)
-	go r.painting()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go r.painting(&wg)
+	wg.Wait()
 }
 
 // CalcPaintedFields prints how many fields are painted at least once.
@@ -45,7 +52,7 @@ func (r *Robot) CalcPaintedFields() int {
 	return len(paintedFieldMap)
 }
 
-func (r *Robot) painting() {
+func (r *Robot) painting(wg *sync.WaitGroup) {
 	currentPosition := Position{X: 0, Y: 0}
 	currentFacing := FacingUp
 
@@ -66,7 +73,7 @@ func (r *Robot) painting() {
 		newPaintColor := PaintColor(val1)
 		nextDirection := TurnDirection(val2)
 
-		newPaintingBlock := r.paintBlock(currentPosition, newPaintColor)
+		newPaintingBlock := r.PaintBlock(currentPosition, newPaintColor)
 
 		r.PaintHistory <- PositionState{
 			Position: currentPosition,
@@ -78,6 +85,7 @@ func (r *Robot) painting() {
 		currentPosition, currentFacing = nextState(currentPosition, currentFacing, nextDirection)
 	}
 
+	wg.Done()
 	close(r.PaintHistory)
 }
 
@@ -94,7 +102,7 @@ func (r Robot) getPaintingBlock(position Position) PaintingBlock {
 	return paintingBlock
 }
 
-func (r *Robot) paintBlock(position Position, color PaintColor) PaintingBlock {
+func (r *Robot) PaintBlock(position Position, color PaintColor) PaintingBlock {
 	newPaintingBlock := PaintingBlock{
 		Position: position,
 		Color:    color,
@@ -187,4 +195,53 @@ type PositionState struct {
 	Facing   RobotFacing
 	OldColor PaintColor
 	NewColor PaintColor
+}
+
+func PaintBlocks(blocks PaintingBlocks) {
+	var minX, minY, maxX, maxY int
+
+	for _, block := range blocks {
+		x := block.Position.X
+		y := block.Position.Y
+
+		if x < minX {
+			minX = x
+		}
+
+		if y < minY {
+			minY = y
+		}
+
+		if x > maxX {
+			maxX = x
+		}
+
+		if y > maxY {
+			maxY = y
+		}
+	}
+
+	offsetX := -minX + 1
+	offsetY := -minY + 1
+	width := offsetX + maxX
+	height := offsetY + maxY
+
+	for j := 0; j < height; j++ {
+		for i := 0; i < width; i++ {
+			blockPositionKey := Position{X: i - offsetX, Y: height - j - offsetY}.toStr()
+			block, hit := blocks[blockPositionKey]
+
+			if hit {
+				switch block.Color {
+				case PaintBlack:
+					fmt.Printf(" ")
+				case PaintWhite:
+					fmt.Printf("▓")
+				}
+			} else {
+				fmt.Printf(" ")
+			}
+		}
+		fmt.Printf("\n")
+	}
 }
