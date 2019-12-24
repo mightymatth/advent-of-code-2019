@@ -19,8 +19,8 @@ func NewProcessor() Processor {
 	return Processor{
 		Memory:       nil,
 		RelativeBase: 0,
-		Input:        make(chan int, 300),
-		Output:       make(chan int, 300),
+		Input:        make(chan int, 1000),
+		Output:       make(chan int, 1000),
 	}
 }
 
@@ -34,7 +34,7 @@ func (p *Processor) Start(wg *sync.WaitGroup) {
 			if wg != nil {
 				wg.Done()
 			}
-			close(p.Input)
+			//close(p.Input)
 			close(p.Output)
 			break
 		}
