@@ -11,7 +11,7 @@ func TestNumberOfBlockTiles(t *testing.T) {
 	game.Start()
 
 	var blockTileCount int
-	for _, tile := range game.Screen {
+	for _, tile := range game.Screen.m {
 		switch tile {
 		case BlockTile:
 			blockTileCount++
