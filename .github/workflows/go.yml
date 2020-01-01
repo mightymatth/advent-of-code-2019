@@ -12,23 +12,18 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go-version }}
+
       - name: Install Go Linter
         run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOROOT)/bin v1.21.0
-      - name: Checkout repository
-        run: go get github.com/$GITHUB_REPOSITORY/...
-      - name: Get dependencies
-        run: |
-          cd ~/go/src/github.com/$GITHUB_REPOSITORY
-          go get -v -t -d ./...
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build
-        run: |
-          cd ~/go/src/github.com/$GITHUB_REPOSITORY
-          go build -v ./...
+        run: go build -v ./...
+
       - name: Lint
-        run: |
-          cd ~/go/src/github.com/$GITHUB_REPOSITORY
-          golangci-lint run ./...
+        run: golangci-lint run ./...
+
       - name: Test
-        run: |
-          cd ~/go/src/github.com/$GITHUB_REPOSITORY
-          go test -v ./...
+        run: go test -v ./...
