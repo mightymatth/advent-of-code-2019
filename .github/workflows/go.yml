@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Go Linter
         run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOROOT)/bin v1.21.0
-        if: {{ ! ./golangci-lint version 2>&1 | grep 'version 1.21.0' }}
+        if: ${{ ! ./golangci-lint version 2>&1 | grep 'version 1.21.0' }}
 
       - name: Checkout
         uses: actions/checkout@v2
